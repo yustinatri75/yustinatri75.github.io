@@ -1,4 +1,4 @@
-importScripts('https://yustinatri75.github.io/js/dexie.js')
+importScripts('https://yustinatri.github.io/js/dexie.js')
 
 let cacheName = 'pwa-cache';
 const db = new Dexie('pwa-database');
@@ -14,7 +14,7 @@ const isValidUrl = urlString => {
     } catch (e) {
         return false;
     }
-    if (url.host === 'https://yustinatri75.github.io/') {
+    if (url.host === 'https://yustinatri.github.io/') {
         return url.protocol === 'http:' || url.protocol === 'https:';
     }
     return false
