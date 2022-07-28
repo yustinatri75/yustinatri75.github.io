@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Home</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="./css/materialize.min.css">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="./images/icons/icon-72x72.png">
+
+</head>
+<body>
+
+<nav>
+    <div class="nav-wrapper indigo">
+        <div class="container">
+            <a href="#" class="brand-logo">Logo</a>
+            <a href="#" data-target="mobile-links" class="sidenav-trigger hide-on-large-only">
+                <i class="material-icons">menu</i>
+            </a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./karyawan.html">Data Karyawan</a></li>
+                <li><a href="./pushnotif.html">Push Notification</a></li>
+            </ul>
+        </div>
+
+    </div>
+</nav>
+
+<ul id="mobile-links" class="sidenav">
+    <li><a href="#">Menu</a></li>
+    <li>
+        <div class="divider"></div>
+    </li>
+    <li><a href="./index.html">Home</a></li>
+    <li><a href="./karyawan.html">Data Karyawan</a></li>
+    <li><a href="./pushnotif.html">Push Notification</a></li>
+</ul>
+
+<div class="container center">
+    <h2>Push Notification</h2>
+
+    <button class="waves-effect waves-light btn red" onclick="checkPermission()">Check Permission</button>
+    <button class="waves-effect waves-light btn teal" onclick="displayNotification()">Display Notification</button>
+</div>
+
+<script src="./js/jquery-3.6.0.min.js"></script>
+<script src="./js/materialize.min.js"></script>
+<script src="./js/main.js"></script>
+
+<script type="module">	
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-app.js";
+    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-messaging.js";
+ 
+    let fbApp, fbMessaging; 
+
+    function initFirebase(){
+       // Your web app's Firebase configuration
+		// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+		const firebaseConfig = {
+			apiKey: "AIzaSyAUZ2LaGX1U71BzCLe6w8ybKKU57cALKn4",
+			authDomain: "pwatraining-d9252.firebaseapp.com",
+			projectId: "pwatraining-d9252",
+			storageBucket: "pwatraining-d9252.appspot.com",
+			messagingSenderId: "107286064853",
+			appId: "1:107286064853:web:48cfdd100df1ca0d2cfc5c",
+			measurementId: "G-NVZVTYY81M"
+		};
+	
+		// Initialize Firebase
+		fbApp = initializeApp(firebaseConfig);
+		fbMessaging = getMessaging(fbApp);
+    }
+    
+  
+    async function firebaseGetToken() {
+        const token = await getToken(fbMessaging, {vapidKey: 'BEMhjOSLvcQB54KHEL4-Bjp5xEhFbpCMcPw8aWnaXvTv8WyA8uVtyaD8bJE8_zjdio3eEjGA8GQIcP7dR1TJdFw'});
+        console.log(token);
+    }
+ 
+	function registerSW() {
+		if ('serviceWorker' in navigator) {   //cek browser support serviceWorker
+			navigator.serviceWorker
+				.register('/firebase-messaging-sw.js')
+				.then(function (reg) {
+					//Berhasil terdaftar
+					console.log('Terdaftar pada scope' + reg.scope)
+                    initFirebase();
+                    firebaseGetToken();
+				})
+				.catch(function (error) {
+					//Gagal Terdaftar
+					console.log('Gagal :' + error)
+				});
+		} else {
+			console.log('Browser tidak support SW')
+		}
+	}
+
+	document.addEventListener('DOMContentLoaded', async function () {
+		registerSW();
+	});
+</script>
+
+<script>
+    function checkPermission() {
+        Notification.requestPermission().then(function (permission) {
+            alert(permission);
+        });
+    }
+
+    function displayNotification() {
+        if (Notification.permission === 'granted') {
+            navigator.serviceWorker.getRegistration()
+                     .then(reg => {
+                         console.log(reg)
+
+                         const options = {
+                             body: 'Here is a notification body!',
+                             icon: 'https://miro.medium.com/max/432/1*gYmM9tPZOxnBr_sjUAgVBw.png',
+                             data: { url: 'https://google.com' } // allows us to identify notification
+                         };
+
+                         reg.showNotification('Hello world!', options);
+                     });
+        }
+    }
+</script>
+</body>
+</html>
