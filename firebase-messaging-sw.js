@@ -14,7 +14,7 @@ const isValidUrl = urlString => {
     } catch (e) {
         return false;
     }
-    if (url.host === 'https://yustinatri75.github.io/') {
+    if (url.host === 'yustinatri75.github.io') {
         return url.protocol === 'http:' || url.protocol === 'https:';
     }
     return false
